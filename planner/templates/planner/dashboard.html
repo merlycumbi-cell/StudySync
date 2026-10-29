@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync | Dashboard</title>
+    <style>
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 20px 0 28px;
+      }
+      
+      .btn {
+        display: inline-block;
+        background: #203468;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.2s ease;
+      }
+      
+      .btn:hover {
+        background: #703a76;
+      }
+      
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #e1eaf3;
+        color: #703a76;
+      }
+      
+      header {
+        background: #203468;
+        color: white;
+        padding: 24px 8%;
+      }
+      
+      header h1 {
+        margin: 0;
+      }
+      
+      main {
+        max-width: 1100px;
+        margin: 32px auto;
+        padding: 0 20px;
+      }
+      
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+      
+      body .card {
+        background-color: #cec8d2;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #f035c7;
+        box-shadow: 0 5px 15px rgba(183, 108, 198, 0.18);
+        margin-bottom: 24px;
+      }
+      
+      .number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #365eb5;
+      }
+      
+      h2 {
+        margin-top: 0;
+      }
+      
+      li {
+        padding: 8px 0;
+      }
+      
+      .empty {
+        color: #68758a;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>StudySync</h1>
+      <p>Your studies, organised in one place.</p>
+    </header>
+
+    <main>
+      <h2>Your Dashboard</h2>
+
+      <div class="actions">
+        <a href="{% url 'planner:add_module' %}" class="btn">+ Add Module</a>
+        <a href="{% url 'planner:add_assignment' %}" class="btn">+ Add Assignment</a>
+        <a href="{% url 'planner:add_study_session' %}" class="btn">+ Schedule Study Session</a>
+      </div>
+
+      <section class="stats">
+        <div class="card">
+          <p>Total Modules</p>
+          <div class="number">{{ total_modules }}</div>
+        </div>
+
+        <div class="card">
+          <p>Pending Assignments</p>
+          <div class="number">{{ pending_assignments }}</div>
+        </div>
+
+        <div class="card">
+          <p>Study Sessions</p>
+          <div class="number">{{ total_study_sessions }}</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>My Modules</h2>
+        {% for module in modules %}
+          <li>{{ module.code }} — {{ module.name }}</li>
+        {% empty %}
+          <p class="empty">No modules added yet.</p>
+        {% endfor %}
+      </section>
+
+      <section class="card">
+        <h2>Upcoming Assignments</h2>
+        {% for assignment in assignments %}
+          <li>{{ assignment.title }} — {{ assignment.module.code }}
+            | Due: {{ assignment.due_date|date:'d M Y, H:i' }}
+            | {{ assignment.get_status_display }}</li>
+        {% empty %}
+          <p class="empty">No assignments added yet.</p>
+        {% endfor %}
+      </section>
+
+      <section class="card">
+        <h2>My Study Sessions</h2>
+        {% for session in study_sessions %}
+          <li>{{ session.title }} — {{ session.module.code }}
+            | {{ session.study_date|date:'d M Y, H:i' }}
+            | {{ session.duration_minutes }} minutes</li>
+        {% empty %}
+          <p class="empty">No study sessions planned yet.</p>
+        {% endfor %}
+      </section>
+    </main>
+  </body>
+</html>
